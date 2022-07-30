@@ -4,27 +4,38 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+from sqlalchemy import LargeBinary
 from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+    email = Column(String(250), nullable=False)
+    
+class Post(Base):
+    __tablename__ = 'post'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    image = Column(LargeBinary, nullable = True)
+    content = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    comment_id=Column(Integer, ForeignKey('comment.id'))
+
+class Comment(Base):
+    __tablename__='comment'
+    id = Column(Integer, primary_key=True)
+    content = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+
+class Liked(Base):
+    __tablename__='liked'
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    user_id = Column(Integer, ForeignKey('user.id'))
+    post = relationship(Post)
+    user = relationship(User)
 
     def to_dict(self):
         return {}
