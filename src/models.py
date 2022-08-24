@@ -14,6 +14,9 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
+    liked_id = Column(Integer, ForeignKey('liked.id'))
+    post = relationship(Post)
+    comment = relationship(Comment)
     
 class Post(Base):
     __tablename__ = 'post'
@@ -22,19 +25,19 @@ class Post(Base):
     content = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
     comment_id=Column(Integer, ForeignKey('comment.id'))
+    liked = relationship(Liked)
 
 class Comment(Base):
     __tablename__='comment'
     id = Column(Integer, primary_key=True)
     content = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
+    post = relationship(Post)
 
 class Liked(Base):
     __tablename__='liked'
     id = Column(Integer, primary_key=True)
     post_id = Column(Integer, ForeignKey('post.id'))
-    user_id = Column(Integer, ForeignKey('user.id'))
-    post = relationship(Post)
     user = relationship(User)
 
     def to_dict(self):
